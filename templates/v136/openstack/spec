@@ -1,5 +1,6 @@
 ---
 deployment_sizes:
+- small
 - medium
 - large
 
