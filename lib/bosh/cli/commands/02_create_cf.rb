@@ -15,7 +15,7 @@ module Bosh::Cli::Command
     option "--disk 4096", Integer, "Size of persistent disk (Mb)"
     option "--security-group default", String, "Security group to assign to provisioned VMs"
     option "--deployment-size medium", String, "Size of deployment - medium or large"
-    option "--skip-dns-validation", Bool, "Skip DNS validaation"
+    option "--skip-dns-validation", "Skip DNS validaation"
     def create_cf
       auth_required
       bosh_status # preload
@@ -41,7 +41,11 @@ module Bosh::Cli::Command
 
       nl
       say "CPI: #{bosh_cpi.make_green}"
-      say "DNS mapping: #{attrs.validated_color(:dns)} --> #{attrs.validated_color(:ip_addresses)}"
+      unless options[:skip_dns_validation]
+        say "DNS mapping: #{attrs.validated_color(:dns)} --> #{attrs.validated_color(:ip_addresses)}"
+      else
+        say "DNS mapping: #{'Skipped'.make_yellow}"
+      end
       say "Deployment name: #{attrs.validated_color(:name)}"
       say "Deployment size: #{attrs.validated_color(:deployment_size)}"
       say "Persistent disk: #{attrs.validated_color(:persistent_disk)}"
