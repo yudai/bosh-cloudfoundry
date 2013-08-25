@@ -18,6 +18,7 @@ module Bosh::Cloudfoundry
       @attributes[:persistent_disk] ||= default_persistent_disk
       @attributes[:security_group] ||= default_security_group
       @attributes[:common_password] ||= random_string(12, :common)
+      @attributes[:skip_dns_validation] ||= default_skip_dns_validation
     end
 
     def name
@@ -106,8 +107,10 @@ module Bosh::Cloudfoundry
 
     # FIXME only supports a single ip_address
     def validate_dns_mapping
-      validate_dns_a_record("api.#{dns}", ip_addresses.first)
-      validate_dns_a_record("demoapp.#{dns}", ip_addresses.first)
+      unless @attributes[:skip_dns_check]
+        validate_dns_a_record("api.#{dns}", ip_addresses.first)
+        validate_dns_a_record("demoapp.#{dns}", ip_addresses.first)
+      end
     end
 
     def validate_dns_a_record(domain, expected_ip_address)
@@ -190,6 +193,11 @@ module Bosh::Cloudfoundry
     def default_security_group
       "default"
     end
+
+    def default_skip_dns_validation
+      false
+    end
+
 
     def set_default_dns
       if dns.nil?
