@@ -1,0 +1,7 @@
+---
+deployment_sizes:
+- small
+- medium
+- large
+
+default_deployment_size: medium
